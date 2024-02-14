@@ -2,15 +2,15 @@
 
 ## Technologies Chosen and Explanations
 
-1. Kinesis Data Stream: Used for ingesting a high volume of events in real-time. It's scalable and durable, ensuring that no events are lost.
+1. **Kinesis Data Stream:** Used for ingesting a high volume of events in real-time. It's scalable and durable, ensuring that no events are lost.
 
-2. Kinesis Data Firehose: Routes data from the Kinesis Data Stream to S3 while handling scalability and buffering. Simplifies data delivery and management.
+2. **Kinesis Data Firehose:** Routes data from the Kinesis Data Stream to S3 while handling scalability and buffering. Simplifies data delivery and management.
 
-3. Lambda Function: Processes incoming events, transforms them according to specifications, and performs deduplication using DynamoDB. Serverless nature ensures scalability and cost-effectiveness.
+3. **Lambda Function:** Processes incoming events, transforms them according to specifications, and performs deduplication using DynamoDB. Serverless nature ensures scalability and cost-effectiveness.
 
-4. DynamoDB: Stores processed event UUIDs to filter out duplicates. Provides fast and scalable database operations.
+4. **DynamoDB:** Stores processed event UUIDs to filter out duplicates. Provides fast and scalable database operations.
 
-5. S3: Stores transformed data partitioned based on event type and created date. Offers high durability, scalability, and cost-effectiveness for storing large volumes of data.
+5. **S3:** Stores transformed data partitioned based on event type and created date. Offers high durability, scalability, and cost-effectiveness for storing large volumes of data.
 
 ## Design Questions
 
