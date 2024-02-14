@@ -34,3 +34,5 @@
 
 ## Conclusion
 This architecture provides a robust and scalable solution for processing and storing a high volume of diverse events in real-time. By leveraging AWS services like Kinesis, Lambda, DynamoDB, and S3, we ensure efficient data processing, deduplication, and storage, while maintaining scalability and cost-effectiveness.
+
+![image] Babbel_Challenge.drawio.png
