@@ -8,8 +8,6 @@ logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
 s3_client = boto3.client("s3")
-dynamodb = boto3.resource("dynamodb")
-table = dynamodb.Table("processed_events")
 
 def transform_payload(payload):
     # Transform payload as per requirements
@@ -27,36 +25,25 @@ def lambda_handler(event, context):
     for record in event["Records"]:
         try:
             payload = json.loads(record["kinesis"]["data"])
-            event_uuid = payload["event_uuid"]
 
-            # Check if event_uuid already processed
-            response = table.get_item(Key={"event_uuid": event_uuid})
-            if "Item" not in response:
-                # Transform payload
-                transformed_payload = transform_payload(payload)
+            # Transform payload
+            transformed_payload = transform_payload(payload)
 
-                # Save transformed payload to S3
-                save_to_s3(transformed_payload)
+            # Save transformed payload to S3
+            save_to_s3(transformed_payload)
 
-                # Record processed event_uuid
-                table.put_item(Item={"event_uuid": event_uuid})
-            else:
-                logger.info(f"Event with UUID {event_uuid} already processed")
         except Exception as e:
             logger.error(f"Error processing event: {e}")
 
 def save_to_s3(payload):
     try:
+        # Create folder path based on event type and subtype
+        folder_path = f"prefix/{payload['event_type']}/{payload['event_subtype']}/"
+
         # Save transformed payload to S3 bucket
         s3_client.put_object(
             Bucket="Babbel-Challenge",
-            Key="prefix/"
-            + payload["event_type"]
-            + "/"
-            + payload["event_subtype"]
-            + "/"
-            + payload["event_uuid"]
-            + ".json",
+            Key=f"{folder_path}{payload['event_uuid']}.json",
             Body=json.dumps(payload),
         )
         logger.info("Payload saved to S3")
