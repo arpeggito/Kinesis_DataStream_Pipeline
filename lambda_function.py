@@ -2,6 +2,7 @@ import boto3
 import json
 from datetime import datetime
 import logging
+import base64
 
 # Setup logging
 logger = logging.getLogger()
@@ -47,17 +48,33 @@ def save_to_s3(payload):
         logger.error(f"Error saving payload to S3: {e}")
 
 def lambda_handler(event, context):
-    # for record in event["Records"]:
-    try:
-        payload = json.loads(event)
+    for record in event["Records"]:
+        try:
+            payload = json.loads(base64.b64decode(record["kinesis"]["data"]))
 
-        # Transform payload
-        transformed_payload = transform_payload(payload)
+            # Transform payload
+            transformed_payload = transform_payload(payload)
+            
+            # Save transformed payload to S3
+            save_to_s3(transformed_payload)
 
-        # Save transformed payload to S3
-        save_to_s3(transformed_payload)
-
-    except Exception as e:
-        logger.error(f"Error processing event: {e}")
+        except Exception as e:
+            logger.error(f"Error processing event: {e}")
+            
+# if __name__ == '__main__':
+#     payload = {
+#     "Records": [
+#         {
+#             "kinesis": {
+#                 "kinesisSchemaVersion": "1.0",
+#                 "partitionKey": "1",
+#                 "sequenceNumber": "49590338271490256608559692538361571095921575989136588898",
+#                 "data":"ewogICAgImV2ZW50X3V1aWQiOiAiMTIzNDU2Nzg5MCIsCiAgICAiZXZlbnRfbmFtZSI6ICJhY2NvdW50OmNyZWF0ZWQiLAogICAgImNyZWF0ZWRfYXQiOiAxNjQ0ODM4ODAwLAogICAgImFjY291bnRfaWQiOiAidXNlcjEyMyIsCiAgICAiZW1haWwiOiAidXNlcjEyM0BleGFtcGxlLmNvbSIsCiAgICAibmFtZSI6ICJKb2huIERvZSIsCiAgICAiYWdlIjogMzAKfQ==",
+#                 "approximateArrivalTimestamp": 1545084650.987
+#             }
+#         }
+#     ]
+# }
+#     lambda_handler(payload, None)
 
 
