@@ -31,28 +31,44 @@
 ## Conclusion
 This architecture provides a robust and scalable solution for processing and storing a high volume of diverse events in real-time. By leveraging AWS services like Kinesis, Lambda, DynamoDB, and S3, we ensure efficient data processing, deduplication, and storage, while maintaining scalability and cost-effectiveness.
 
-![Babbel_Challenge drawio](https://github.com/arpeggito/babbel_challenge/assets/145495639/c86498aa-f576-4dbc-94c7-d1a318676c39)
+
+![Babbel_Challenge drawio](https://github.com/arpeggito/babbel_challenge/assets/145495639/edff27c8-7602-44d9-aeda-85f2fff1f6b9)
 
 ## How to make it work.
-Note: To run this, you'll need to have the amazon cli with your account.
+Note: To run this, you'll need to have the Amazon Cli with your account.
 1. To start the AWS Services (Kinesis Data Stream, Lambda, S3), you'll need to run the following commands:
     ## terraform init
     ## terraform plan
     ## terraform apply
-2. Verify of the services: You can navigate into your AWS account, and start to check that the services are up and correctly configured
+   
+3. Verify the services: You can navigate into your AWS account, and start to check that the services are up and correctly configured
     ## Kinesis Data Stream: verify that the resource was created, Capacity mode is On-Demand.
-    ## Lambda: Check that the resource is created, and that the code was uploaded. (I've attached a Json file to test the script)
-    ## S3 Bucket: Verify that the S3 bucket was created. 
+    ![Terraform_kinesis_datastream](https://github.com/arpeggito/babbel_challenge/assets/145495639/5691223b-ed35-404e-90b5-ba7780f6dad4)
+    ## Lambda: Check that the resource is created and that the code was uploaded. (I've attached a JSON file to test the script)
+    ![Lambda](https://github.com/arpeggito/babbel_challenge/assets/145495639/f99f5c15-c1ea-4c42-aed7-7041cf997c04)
+    ## S3 Bucket: Verify that the S3 bucket was created.
+    ![S3_bucket](https://github.com/arpeggito/babbel_challenge/assets/145495639/9541c06e-b1b2-4c9e-9c4f-46b6e0baaae6)
 
-3. To inject data to the Kinesis data stream, you can perform thje following commands
+   
+
+
+5. To inject data into the Kinesis data stream, you can perform the following commands
 
     aws kinesis put-record --stream-name terraform-kinesis-test --partition-key 12345 --data file://event2.json
     aws kinesis get-shard-iterator --shard-id shardId-xxxxxxxxx --shard-iterator-type TRIM_HORIZON --stream-name terraform-kinesis-test
     aws kinesis get-records --shard-iterator "shard iterator obtained from the previous command"
 
-4. Verifications:
+6. Verifications:
     To verify that the kinesis data stream is successfully receiving the records:
-        a. go to the Data viewer tab in the Data Stream Summary
+        a. go to the Data Viewer tab in the Data Stream Summary
         b. Select the shard that the record was sent to
         c. Select Starting Position Trim Horizon
         d. Get records
+       ![Kinesis_Stream_validation](https://github.com/arpeggito/babbel_challenge/assets/145495639/ba1a1fe9-01ea-4337-9b46-b09c2e85076b)
+
+   To verify if the Lambda is performing the transformation:
+        a. Go to the S3 bucket
+        b. Check if there's a 'prefix/' and 'duplicated/' folder
+           Note: The duplicated folder will only show up if you send 2 times the same event with the same 'UUID'
+        ![image](https://github.com/arpeggito/babbel_challenge/assets/145495639/99fbf3b4-73b6-4162-afaa-77a8ac64e7ef)
+
