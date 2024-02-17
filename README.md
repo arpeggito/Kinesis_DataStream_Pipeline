@@ -28,10 +28,6 @@
 
     - **Approach:** Use JSON format for storing data in S3 for human readability. Parquet format can be considered for better performance and storage efficiency if needed.
 
-## Conclusion
-This architecture provides a robust and scalable solution for processing and storing a high volume of diverse events in real-time. By leveraging AWS services like Kinesis, Lambda, DynamoDB, and S3, we ensure efficient data processing, deduplication, and storage, while maintaining scalability and cost-effectiveness.
-
-
 ![Babbel_Challenge drawio](https://github.com/arpeggito/babbel_challenge/assets/145495639/edff27c8-7602-44d9-aeda-85f2fff1f6b9)
 
 ## How to make it work.
@@ -71,4 +67,8 @@ Note: To run this, you'll need to have the Amazon Cli with your account.
         b. Check if there's a 'prefix/' and 'duplicated/' folder
            Note: The duplicated folder will only show up if you send 2 times the same event with the same 'UUID'
         ![image](https://github.com/arpeggito/babbel_challenge/assets/145495639/99fbf3b4-73b6-4162-afaa-77a8ac64e7ef)
+
+## Conclusion
+This architecture provides a robust and scalable solution for processing and storing a high volume of diverse events in real-time. By leveraging AWS services like Kinesis, Lambda, and S3, we ensure efficient data processing, deduplication, and storage, while maintaining scalability and cost-effectiveness.
+
 
