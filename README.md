@@ -37,9 +37,9 @@ This architecture provides a robust and scalable solution for processing and sto
 ## How to make it work.
 Note: To run this, you'll need to have the Amazon Cli with your account.
 1. To start the AWS Services (Kinesis Data Stream, Lambda, S3), you'll need to run the following commands:
-    ## terraform init
-    ## terraform plan
-    ## terraform apply
+    a. terraform init
+    b. terraform plan
+    c. terraform apply
    
 3. Verify the services: You can navigate into your AWS account, and start to check that the services are up and correctly configured
     ## Kinesis Data Stream: verify that the resource was created, Capacity mode is On-Demand.
