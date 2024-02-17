@@ -1,0 +1,10 @@
+{
+    "event_uuid": "5678901234",
+    "event_name": "payment:order:completed",
+    "created_at": 1644849600,
+    "order_id": "order789",
+    "amount": 50.00,
+    "currency": "USD",
+    "payment_method": "credit_card",
+    "status": "completed"
+  }

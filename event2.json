@@ -1,0 +1,9 @@
+{
+    "event_uuid": "0987654321",
+    "event_name": "lesson:started",
+    "created_at": 1644842400,
+    "lesson_id": "lesson456",
+    "title": "Introduction to Programming",
+    "duration_minutes": 60,
+    "instructor": "Jane Smith"
+}

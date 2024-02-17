@@ -1,15 +1,15 @@
 provider "aws" {
-  region = "eu-west-1"  # Update with your desired AWS region
+  region = "eu-central-1"  # Update with your desired AWS region
 }
 
 data "aws_iam_policy_document" "lambda_execution_role"{
   statement {
-    effect  = "Allow"
-    actions = ["sts:AssumeRole"]
+    effect = "Allow"
     principals {
-      type        = "Service"
       identifiers = ["lambda.amazonaws.com"]
+      type        = "Service"
     }
+    actions = ["sts:AssumeRole"]
   }
 }
 
@@ -24,25 +24,106 @@ data "archive_file" "python_lambda_package" {
   output_path = "lambda.zip"
 }
 
+# Attach policies to IAM role for Lambda execution
+resource "aws_iam_policy_attachment" "lambda_policy_attachment" {
+  name       = "lambda_policy_attachment"
+  roles      = [aws_iam_role.lambda_execution_role.name]
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaKinesisExecutionRole"
+}
+
+resource "aws_iam_policy_attachment" "lambda_policy_attachment_s3" {
+  name       = "lambda_policy_s3"
+  roles      = [aws_iam_role.lambda_execution_role.name]
+  policy_arn = aws_iam_policy.access_s3.arn
+}
+
+# aws_iam_policy provides IAM policies for the resources where we define some actions to be performed. In this case, we define actions such as Lambda invocation and CloudWatch logging.
+resource "aws_iam_policy" "access_s3" {
+  name = "access_s3"
+  policy =jsonencode({
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "VisualEditor0",
+            "Effect": "Allow",
+            "Action": [
+                "s3:ListAccessPointsForObjectLambda",
+                "s3:GetAccessPoint",
+                "s3:PutAccountPublicAccessBlock",
+                "s3:ListAccessPoints",
+                "s3:CreateStorageLensGroup",
+                "s3:ListJobs",
+                "s3:PutStorageLensConfiguration",
+                "s3:ListMultiRegionAccessPoints",
+                "s3:ListStorageLensGroups",
+                "s3:ListStorageLensConfigurations",
+                "s3:GetAccountPublicAccessBlock",
+                "s3:ListAllMyBuckets",
+                "s3:ListAccessGrantsInstances",
+                "s3:PutAccessPointPublicAccessBlock",
+                "s3:CreateJob"
+            ],
+            "Resource": "*"
+        },
+        {
+            "Sid": "VisualEditor1",
+            "Effect": "Allow",
+            "Action": "s3:*",
+            "Resource": [
+                "arn:aws:s3:::babbel-challenge-v1",
+                "arn:aws:s3:::babbel-challenge-v1/*"
+            ]
+        }
+    ]
+  })
+}
+resource "aws_iam_policy" "lambda_policies" {
+  name = "lambda-policy"
+  policy = jsonencode({
+    "Version": "2012-10-17",
+    "Statement": [
+      {
+        "Action": [
+          "kinesis:DescribeStream",
+          "kinesis:DescribeStreamSummary",
+          "kinesis:GetRecords",
+          "kinesis:GetShardIterator",
+          "kinesis:ListShards",
+          "kinesis:ListStreams",
+          "kinesis:SubscribeToShard",
+          "logs:CreateLogGroup",
+          "logs:CreateLogStream",
+          "logs:PutLogEvents"
+        ],
+        "Effect": "Allow",
+        "Resource":  ["*"]
+      },
+      {
+        "Action": [
+          "lambda:InvokeFunction",
+          "lambda:GetFunctionConfiguration"
+        ],
+        "Effect": "Allow",
+        "Resource":  [aws_lambda_function.event_processor.arn]
+      }
+    ]
+  })
+}
+
+
 # Create AWS Lambda function
 resource "aws_lambda_function" "event_processor" {
-  filename      = "lambda.zip"  # Update with your Lambda deployment package
+  filename      = "lambda.zip"
   function_name = "event-processor"
   role          = aws_iam_role.lambda_execution_role.arn
   handler       = "lambda_function.lambda_handler"
   runtime       = "python3.8"
-
-  environment {
-    variables = {
-      S3_BUCKET_NAME      = "babbel-challenge"  # Update with your S3 bucket name
-      S3_BUCKET_PREFIX    = "prefix/"  # Update with your S3 bucket prefix
-    }
-  }
+  timeout       = 60
+  source_code_hash = data.archive_file.python_lambda_package.output_base64sha256
 }
 
 resource "aws_kinesis_stream" "test_stream" {
   name             = "terraform-kinesis-test"
-  shard_count      = 1
   retention_period = 48
 
   shard_level_metrics = [
@@ -53,77 +134,52 @@ resource "aws_kinesis_stream" "test_stream" {
   stream_mode_details {
     stream_mode = "ON_DEMAND"
   }
-
-  tags = {
-    Environment = "test"
-  }
 }
+
+resource "aws_lambda_event_source_mapping" "kinesis_event_mapping" {
+  event_source_arn  = aws_kinesis_stream.test_stream.arn
+  function_name     = aws_lambda_function.event_processor.arn
+  starting_position = "TRIM_HORIZON"
+}
+
 # Create S3 bucket for storing transformed events
 resource "aws_s3_bucket" "processed_events_bucket" {
-  bucket = "babbel-challenge"  # Update with your S3 bucket name
+  bucket = "babbel-challenge-v1"  # Update with your S3 bucket name
   acl    = "private"
 }
+# Set to false the ACL in the bucket
+resource "aws_s3_bucket_public_access_block" "processed_events_bucket" {
+  bucket = aws_s3_bucket.processed_events_bucket.id
 
-# Create AWS Kinesis Data Firehose delivery stream
-resource "aws_kinesis_firehose_delivery_stream" "event_delivery_stream" {
-  name        = "event-delivery-stream"
-  destination = "extended_s3"  # Use "extended_s3" for delivering data to S3
+  block_public_acls       = false
+  block_public_policy     = false
+  ignore_public_acls      = false
+  restrict_public_buckets = false
+}
 
-  extended_s3_configuration {
-    bucket_arn             = aws_s3_bucket.processed_events_bucket.arn  # Reference the correct bucket ARN
-    compression_format     = "UNCOMPRESSED"
-    role_arn               = aws_iam_role.firehose_role.arn
-    prefix                 = "raw-events/"
-    error_output_prefix    = "firehose-errors/"
-    cloudwatch_logging_options {
-      enabled = true
-      log_group_name = "/aws/kinesisfirehose/event-delivery-stream"
-      log_stream_name = "firehose-log-stream"
-    }
-    processing_configuration {
-      enabled = "true"
+# Policy document for granting permissions to describe the Kinesis stream
+data "aws_iam_policy_document" "kinesis_describe_stream" {
+  statement {
+    effect = "Allow"
+    
+    actions = ["kinesis:DescribeStream"]
 
-      processors {
-        type = "Lambda"
-
-        parameters {
-          parameter_name  = "LambdaArn"
-          parameter_value = "${aws_lambda_function.event_processor.arn}:$LATEST"
-        }
-      }
-    }
+    resources = ["arn:aws:kinesis:eu-central-1:247857555516:stream/terraform-kinesis-test"]
   }
 }
 
-
-# Attach policies to IAM role for Lambda execution
-resource "aws_iam_policy_attachment" "lambda_policy_attachment" {
-  name       = "lambda_policy_attachment"
-  roles      = [aws_iam_role.lambda_execution_role.name]
-
-  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+# IAM policy for describing the Kinesis stream
+resource "aws_iam_policy" "kinesis_describe_stream" {
+  name        = "kinesis-describe-stream-policy"
+  policy      = data.aws_iam_policy_document.kinesis_describe_stream.json
 }
 
-# IAM Role for Kinesis Data Firehose
-resource "aws_iam_role" "firehose_role" {
-  name = "firehose_role"
-  assume_role_policy = jsonencode({
-    Version   = "2012-10-17",
-    Statement = [{
-      Effect    = "Allow",
-      Principal = {
-        Service = "firehose.amazonaws.com"
-      },
-      Action    = "sts:AssumeRole"
-    }]
-  })
+resource "aws_cloudwatch_log_group" "kinesis_DS_log" {
+  name = "/aws/kinesisdatastream/data_to_lambda"
+  retention_in_days = 14
 }
 
-# Attach policies to IAM role for Kinesis Data Firehose
-resource "aws_iam_policy_attachment" "firehose_policy_attachment" {
-  name       = "firehose_policy_attachment"
-  roles      = [aws_iam_role.firehose_role.name]
-
-  #policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonKinesisFirehoseFullAccess"
-  policy_arn = "arn:aws:iam::aws:policy/AmazonKinesisFirehoseFullAccess"
+resource "aws_cloudwatch_log_group" "lambda_log_group" {
+  name = "/aws/lambda/firehose_lambda_processor"
+  retention_in_days = 14
 }

@@ -1,0 +1,9 @@
+{
+    "event_uuid": "1234567890",
+    "event_name": "account:created",
+    "created_at": 1644838800,
+    "account_id": "user123",
+    "email": "user123@example.com",
+    "name": "John Doe",
+    "age": 30
+  }
