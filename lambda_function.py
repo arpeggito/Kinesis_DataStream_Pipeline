@@ -10,10 +10,11 @@ import traceback
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
+# Define the S3 Client
 s3_client = boto3.client("s3")
 
+# Transform payload as per requirements' to add additional fields to the events.
 def transform_payload(payload):
-    # Transform payload as per requirements'
     payload ["created_datetime"] = datetime.utcfromtimestamp(
             payload["created_at"]
         ).isoformat()
@@ -27,7 +28,6 @@ def transform_payload(payload):
 def save_to_s3(payload):
     try:
         # Check if the UUID already exists in S3
-        
         s3_client.head_object(
             Bucket="babbel-challenge-v1",
             Key=f'prefix/{payload["event_type"]}/{payload["event_subtype"]}/{payload["event_uuid"]}.json'
@@ -51,11 +51,12 @@ def save_to_s3(payload):
         )
         logger.info("Payload saved to S3")
 
-
+# Main lambda function
 def lambda_handler(event, context):
     for record in event["Records"]:
         try:
             payload = json.loads(base64.b64decode(record["kinesis"]["data"]))
+            
             # Transform payload
             transformed_payload = transform_payload(payload)
 
