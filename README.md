@@ -22,7 +22,7 @@
 2. Partitioning Strategy:
 
     - **Approach:** Partition data in S3 based on event_type and created_datetime. Adjust partitioning strategy based on changes in event volume.
-    - **Scalability:** Horizontal scaling with AWS services like S3 ensures performance as the volume increases or decreases.
+    - **Scalability:** Horizontal scaling with AWS services like Kinesis on-demand mode, Lambda and S3 ensures performance as the volume increases or decreases. 
 
 3. Data Storage Format:
 
