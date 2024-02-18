@@ -46,15 +46,15 @@
 
     - **Kinesis Data Stream:** verify that the resource was created, Capacity mode is On-Demand.
 
-    ![Terraform_kinesis_datastream](https://github.com/arpeggito/babbel_challenge/assets/145495639/5691223b-ed35-404e-90b5-ba7780f6dad4)
+![Terraform_kinesis_datastream](https://github.com/arpeggito/babbel_challenge/assets/145495639/5691223b-ed35-404e-90b5-ba7780f6dad4)
 
     - **Lambda:** Check that the function is created with the Kinesis Data Stream as a trigger source. (I've attached a JSON file to test the script)
     
-    ![image](https://github.com/arpeggito/babbel_challenge/assets/145495639/6ed19eec-e017-4740-a895-8a8d7c94fc59)
+![image](https://github.com/arpeggito/babbel_challenge/assets/145495639/6ed19eec-e017-4740-a895-8a8d7c94fc59)
 
     - **S3 Bucket:** Verify that the S3 bucket was created.
 
-    ![S3_bucket](https://github.com/arpeggito/babbel_challenge/assets/145495639/9541c06e-b1b2-4c9e-9c4f-46b6e0baaae6)
+![S3_bucket](https://github.com/arpeggito/babbel_challenge/assets/145495639/9541c06e-b1b2-4c9e-9c4f-46b6e0baaae6)
 
    
 
@@ -85,7 +85,7 @@
         b. Check if there's a 'prefix/' and 'duplicated/' folder
            Note: The duplicated folder will only show up if you send 2 times the same event with the same 'UUID'
 
-        ![image](https://github.com/arpeggito/babbel_challenge/assets/145495639/99fbf3b4-73b6-4162-afaa-77a8ac64e7ef)
+![image](https://github.com/arpeggito/babbel_challenge/assets/145495639/99fbf3b4-73b6-4162-afaa-77a8ac64e7ef)
 
 ## Conclusion
 This architecture provides a robust and scalable solution for processing and storing a high volume of diverse events in real-time. By leveraging AWS services like Kinesis, Lambda, and S3, we ensure efficient data processing, deduplication, and storage, while maintaining scalability and cost-effectiveness.
