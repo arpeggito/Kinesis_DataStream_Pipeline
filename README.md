@@ -55,9 +55,11 @@ Note: To run this, you'll need to have the Amazon Cli with your account.
 
 5. To inject data into the Kinesis data stream, you can perform the following commands
 
-    aws kinesis put-record --stream-name terraform-kinesis-test --partition-key 12345 --data file://event2.json
-    aws kinesis get-shard-iterator --shard-id shardId-xxxxxxxxx --shard-iterator-type TRIM_HORIZON --stream-name terraform-kinesis-test
-    aws kinesis get-records --shard-iterator "shard iterator obtained from the previous command"
+    - aws kinesis put-record --stream-name terraform-kinesis-test --partition-key 12345 --data file://event2.json
+
+    - aws kinesis get-shard-iterator --shard-id shardId-xxxxxxxxx --shard-iterator-type TRIM_HORIZON --stream-name terraform-kinesis-test
+
+    - aws kinesis get-records --shard-iterator "shard iterator obtained from the previous command"
 
 6. Verifications:
     To verify that the kinesis data stream is successfully receiving the records:
