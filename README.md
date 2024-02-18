@@ -78,7 +78,7 @@
 
         d. Get records
 
-       ![Kinesis_Stream_validation](https://github.com/arpeggito/babbel_challenge/assets/145495639/ba1a1fe9-01ea-4337-9b46-b09c2e85076b)
+![Kinesis_Stream_validation](https://github.com/arpeggito/babbel_challenge/assets/145495639/ba1a1fe9-01ea-4337-9b46-b09c2e85076b)
 
    To verify if the Lambda is performing the transformation:
         a. Go to the S3 bucket
