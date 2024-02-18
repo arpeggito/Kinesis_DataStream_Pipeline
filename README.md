@@ -8,6 +8,10 @@
 
 3. **S3:** Stores transformed data partitioned based on event type and created date. Offers high durability, scalability, and cost-effectiveness for storing large volumes of data.
 
+4. **Python:** To perform the data manipulation/transformation.
+
+5. **Terraform:** To deploy the AWS resources as IaC.
+
 ## Design Questions
 
 1. Handling Duplicate Events:
