@@ -2,6 +2,7 @@ provider "aws" {
   region = "eu-central-1"  # Update with your desired AWS region
 }
 
+# Policy document for granting permissionsLambda
 data "aws_iam_policy_document" "lambda_execution_role"{
   statement {
     effect = "Allow"
@@ -18,6 +19,7 @@ resource "aws_iam_role" "lambda_execution_role" {
   assume_role_policy = data.aws_iam_policy_document.lambda_execution_role.json
 }
 
+# Generates an archive from our script to a zip file to send to Lambda.
 data "archive_file" "python_lambda_package" {
   type = "zip"
   source_file = "lambda_function.py"
@@ -31,13 +33,14 @@ resource "aws_iam_policy_attachment" "lambda_policy_attachment" {
   policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaKinesisExecutionRole"
 }
 
+# Attach policies to IAM role for Lambda to have access to the S3 bucket.
 resource "aws_iam_policy_attachment" "lambda_policy_attachment_s3" {
   name       = "lambda_policy_s3"
   roles      = [aws_iam_role.lambda_execution_role.name]
   policy_arn = aws_iam_policy.access_s3.arn
 }
 
-# aws_iam_policy provides IAM policies for the resources where we define some actions to be performed. In this case, we define actions such as Lambda invocation and CloudWatch logging.
+# IAM policies for the resources where we define some actions to be performed. 
 resource "aws_iam_policy" "access_s3" {
   name = "access_s3"
   policy =jsonencode({
@@ -110,7 +113,6 @@ resource "aws_iam_policy" "lambda_policies" {
   })
 }
 
-
 # Create AWS Lambda function
 resource "aws_lambda_function" "event_processor" {
   filename      = "lambda.zip"
@@ -122,6 +124,7 @@ resource "aws_lambda_function" "event_processor" {
   source_code_hash = data.archive_file.python_lambda_package.output_base64sha256
 }
 
+# Creates a Kinesis Data Stream
 resource "aws_kinesis_stream" "test_stream" {
   name             = "terraform-kinesis-test"
   retention_period = 48
@@ -136,6 +139,7 @@ resource "aws_kinesis_stream" "test_stream" {
   }
 }
 
+# Makes the stream we just created as a Trigger for lambda
 resource "aws_lambda_event_source_mapping" "kinesis_event_mapping" {
   event_source_arn  = aws_kinesis_stream.test_stream.arn
   function_name     = aws_lambda_function.event_processor.arn
@@ -147,6 +151,7 @@ resource "aws_s3_bucket" "processed_events_bucket" {
   bucket = "babbel-challenge-v1"  # Update with your S3 bucket name
   acl    = "private"
 }
+
 # Set to false the ACL in the bucket
 resource "aws_s3_bucket_public_access_block" "processed_events_bucket" {
   bucket = aws_s3_bucket.processed_events_bucket.id
@@ -174,6 +179,7 @@ resource "aws_iam_policy" "kinesis_describe_stream" {
   policy      = data.aws_iam_policy_document.kinesis_describe_stream.json
 }
 
+# Cloudwatch log groups
 resource "aws_cloudwatch_log_group" "kinesis_DS_log" {
   name = "/aws/kinesisdatastream/data_to_lambda"
   retention_in_days = 14
