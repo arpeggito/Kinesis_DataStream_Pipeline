@@ -61,7 +61,8 @@
 
 ## 3. To inject data into the Kinesis data stream, you can perform the following commands
 
-    - aws kinesis put-record --stream-name terraform-kinesis-test --partition-key 12345 --data file://event2.json
+    - aws kinesis put-record --stream-name terraform-kinesis-test --partition-key 12345 --data file://event.json
+        -Note: if the event.json file is in another directory, it needs to be specified in the command.
 
     - aws kinesis get-shard-iterator --shard-id shardId-xxxxxxxxx --shard-iterator-type TRIM_HORIZON --stream-name terraform-kinesis-test
 
@@ -88,6 +89,6 @@
 ![image](https://github.com/arpeggito/babbel_challenge/assets/145495639/99fbf3b4-73b6-4162-afaa-77a8ac64e7ef)
 
 ## Conclusion
-This architecture provides a robust and scalable solution for processing and storing a high volume of diverse events in real-time. By leveraging AWS services like Kinesis, Lambda, and S3, we ensure efficient data processing, deduplication, and storage, while maintaining scalability and cost-effectiveness.
+This architecture provides a robust and scalable solution for processing and storing a high volume of diverse events in real time. By leveraging AWS services like Kinesis, Lambda, and S3, we ensure efficient data processing, deduplication, and storage, while maintaining scalability and cost-effectiveness.
 
 
