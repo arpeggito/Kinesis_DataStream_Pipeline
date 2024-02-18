@@ -33,8 +33,8 @@
 ![Babbel_Challenge drawio](https://github.com/arpeggito/babbel_challenge/assets/145495639/edff27c8-7602-44d9-aeda-85f2fff1f6b9)
 
 ## How to make it work.
-Note: To run this, you'll need to have the Amazon Cli with your account.
-1. To start the AWS Services (Kinesis Data Stream, Lambda, S3), you'll need to run the following commands:
+- Note: To run this, you'll need to have the Amazon Cli with your account.
+## 1. To start the AWS Services (Kinesis Data Stream, Lambda, S3), you'll need to run the following commands:
    
     a. terraform init
 
@@ -42,18 +42,24 @@ Note: To run this, you'll need to have the Amazon Cli with your account.
 
     c. terraform apply
    
-3. Verify the services: You can navigate into your AWS account, and start to check that the services are up and correctly configured
-    ## Kinesis Data Stream: verify that the resource was created, Capacity mode is On-Demand.
+## 2. Verify the services: You can navigate into your AWS account, and start to check that the services are up and correctly configured
+
+    - Kinesis Data Stream: verify that the resource was created, Capacity mode is On-Demand.
+
     ![Terraform_kinesis_datastream](https://github.com/arpeggito/babbel_challenge/assets/145495639/5691223b-ed35-404e-90b5-ba7780f6dad4)
-    ## Lambda: Check that the function is created with the Kinesis Data Stream as a trigger source. (I've attached a JSON file to test the script)
+
+    - Lambda: Check that the function is created with the Kinesis Data Stream as a trigger source. (I've attached a JSON file to test the script)
+    
     ![image](https://github.com/arpeggito/babbel_challenge/assets/145495639/6ed19eec-e017-4740-a895-8a8d7c94fc59)
-    ## S3 Bucket: Verify that the S3 bucket was created.
+
+    - S3 Bucket: Verify that the S3 bucket was created.
+
     ![S3_bucket](https://github.com/arpeggito/babbel_challenge/assets/145495639/9541c06e-b1b2-4c9e-9c4f-46b6e0baaae6)
 
    
 
 
-5. To inject data into the Kinesis data stream, you can perform the following commands
+## 3. To inject data into the Kinesis data stream, you can perform the following commands
 
     - aws kinesis put-record --stream-name terraform-kinesis-test --partition-key 12345 --data file://event2.json
 
@@ -61,7 +67,7 @@ Note: To run this, you'll need to have the Amazon Cli with your account.
 
     - aws kinesis get-records --shard-iterator "shard iterator obtained from the previous command"
 
-6. Verifications:
+## 4. Verifications:
     To verify that the kinesis data stream is successfully receiving the records:
         a. go to the Data Viewer tab in the Data Stream Summary
         b. Select the shard that the record was sent to
