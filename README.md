@@ -4,11 +4,9 @@
 
 1. **Kinesis Data Stream:** Used for ingesting a high volume of events in real-time. It's scalable and durable, ensuring that no events are lost.
 
-2. **Kinesis Data Firehose:** Routes data from the Kinesis Data Stream to S3 while handling scalability and buffering. Simplifies data delivery and management.
+2. **Lambda Function:** Processes incoming events, transforms them according to specifications, and performs deduplication using DynamoDB. Serverless nature ensures scalability and cost-effectiveness.
 
-3. **Lambda Function:** Processes incoming events, transforms them according to specifications, and performs deduplication using DynamoDB. Serverless nature ensures scalability and cost-effectiveness.
-
-4. **S3:** Stores transformed data partitioned based on event type and created date. Offers high durability, scalability, and cost-effectiveness for storing large volumes of data.
+3. **S3:** Stores transformed data partitioned based on event type and created date. Offers high durability, scalability, and cost-effectiveness for storing large volumes of data.
 
 ## Design Questions
 
@@ -21,12 +19,12 @@
         
 2. Partitioning Strategy:
 
-    - **Approach:** Partition data in S3 based on event_type and created_datetime. Adjust partitioning strategy based on changes in event volume.
+    - **Approach:** Since I'm utilizing the On-Demand feature of Kinesis, my approach will be to have shards/partition based on type of events because of the Dynamic Scaling (Scale up at shard level when the patterns of traffic are too high, and scale down when the traffic is low), this approach also provides isolation and efficiency by dedicating shards to specific event types which can lead to more efficient resource utilization, and also cost efficiency with On-Demand mode, you pay only for the resources you use, without the need to provision capacity in advance. 
     - **Scalability:** Horizontal scaling with AWS services like Kinesis on-demand mode, Lambda and S3 ensures performance as the volume increases or decreases. 
 
 3. Data Storage Format:
 
-    - **Approach:** Use JSON format for storing data in S3 for human readability. Parquet format can be considered for better performance and storage efficiency if needed.
+    - **Approach:** Use JSON format for storing data in S3 for human readability. Parquet format can be considered for better performance and storage efficiency if needed (Maybe for a Data Analysis perspective)
 
 ![Babbel_Challenge drawio](https://github.com/arpeggito/babbel_challenge/assets/145495639/edff27c8-7602-44d9-aeda-85f2fff1f6b9)
 
