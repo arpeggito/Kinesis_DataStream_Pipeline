@@ -4,7 +4,7 @@
 
 1. **Kinesis Data Stream:** Used for ingesting a high volume of events in real-time. It's scalable and durable, ensuring that no events are lost.
 
-2. **Lambda Function:** Processes incoming events, transforms them according to specifications, and performs deduplication using DynamoDB. Serverless nature ensures scalability and cost-effectiveness.
+2. **Lambda Function:** Processes incoming events, transforms them according to specifications of the challenge, and performs separation of duplicated. Serverless nature ensures scalability and cost-effectiveness.
 
 3. **S3:** Stores transformed data partitioned based on event type and created date. Offers high durability, scalability, and cost-effectiveness for storing large volumes of data.
 
