@@ -4,7 +4,7 @@
 
 1. **Kinesis Data Stream:** Used for ingesting a high volume of events in real-time. It's scalable and durable, ensuring that no events are lost.
 
-2. **Lambda Function:** Processes incoming events, transforms them according to specifications of the challenge, and performs separation of duplicated. Serverless nature ensures scalability and cost-effectiveness.
+2. **Lambda Function:** To processes incoming events, transforms them according to specifications of the challenge and send the events to the S3 bucket performing separation of duplicates. The serverless nature ensures scalability and cost-effectiveness.
 
 3. **S3:** Stores transformed data partitioned based on event type and created date. Offers high durability, scalability, and cost-effectiveness for storing large volumes of data.
 
@@ -17,18 +17,20 @@
 1. Handling Duplicate Events:
 
     - **Approach:** Utilize the event_uuid to identify duplicated events. Maintain a record of processed event UUIDs in a separate S3 prefix to filter out duplicates.
+
     - **Quality Metrics:**
         - **Duplicate event rate:** Percentage of events that are duplicates.
         - **Processing latency:** Time taken to identify and filter out duplicates.
         
 2. Partitioning Strategy:
 
-    - **Approach:** I'm utilizing the On-Demand feature of Kinesis, my approach will be to have shards/partitions based on the type of events because of the dynamic scaling of the on-demand feature (Scale up at shard level when the patterns of traffic are too high, and scale down when the traffic is low), this approach also provides isolation and efficiency by dedicating shards to specific event types which can lead to more efficient resource utilization, and also cost efficiency with On-Demand mode, you pay only for the resources you use, without the need to provision capacity in advance. 
+    - **Approach:** I'm utilizing the On-Demand feature of Kinesis. My approach will be to have shards/partitions based on the type of events due to the nature of the dynamic scaling of the on-demand feature; scale up at shard level when the patterns of traffic are too high, and scale down when the traffic is low. This approach also provides isolation and efficiency by dedicating shards to specific event types which can lead to more efficient resource utilization. Also, On-Demand mode is cost efficient. You pay only for the resources you use without the need to provision capacity in advance. 
+
     - **Scalability:** Horizontal scaling with AWS services like Kinesis on-demand mode, Lambda, and S3 ensures performance as the volume increases or decreases. 
 
 3. Data Storage Format:
 
-    - **Approach:** Use JSON format for storing data in S3 for human readability. Parquet format can be considered for better performance and storage efficiency if needed (Maybe from a Data Analysis perspective)
+    - **Approach:** Use JSON format for storing data in S3 for human readability. Parquet format can be considered for better performance and storage efficiency if needed, maybe from a Data Analysis perspective.
 
 ![Babbel_Challenge drawio](https://github.com/arpeggito/babbel_challenge/assets/145495639/edff27c8-7602-44d9-aeda-85f2fff1f6b9)
 
@@ -85,10 +87,11 @@
 
         b. Check if there's a 'prefix/' and 'duplicated/' folder
            Note: The duplicated folder will only show up if you send 2 times the same event with the same 'UUID'
-
 ![image](https://github.com/arpeggito/babbel_challenge/assets/145495639/99fbf3b4-73b6-4162-afaa-77a8ac64e7ef)
+
+        c. In the 'profex/' folder, you can also see that the files are being separated by event:
+![image](https://github.com/arpeggito/babbel_challenge/assets/145495639/801ff7c4-b5e2-47f3-8b5d-0c691cf1495d)
+
 
 ## Conclusion
 This architecture provides a robust and scalable solution for processing and storing a high volume of diverse events in real time. By leveraging AWS services like Kinesis, Lambda, and S3, we ensure efficient data processing, deduplication, and storage, while maintaining scalability and cost-effectiveness.
-
-

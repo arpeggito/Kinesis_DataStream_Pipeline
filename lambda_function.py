@@ -3,8 +3,6 @@ import json
 from datetime import datetime
 import logging
 import base64
-import traceback
-
 
 # Setup logging
 logger = logging.getLogger()
@@ -56,7 +54,7 @@ def lambda_handler(event, context):
     for record in event["Records"]:
         try:
             payload = json.loads(base64.b64decode(record["kinesis"]["data"]))
-            
+
             # Transform payload
             transformed_payload = transform_payload(payload)
 
@@ -64,6 +62,5 @@ def lambda_handler(event, context):
             save_to_s3(transformed_payload)
 
         except Exception as e:
-            print(traceback.format_exc())
             logger.error(f"Error processing event: {e}")
 
