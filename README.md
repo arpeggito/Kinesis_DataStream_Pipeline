@@ -44,15 +44,15 @@
    
 ## 2. Verify the services: You can navigate into your AWS account, and start to check that the services are up and correctly configured
 
-    - Kinesis Data Stream: verify that the resource was created, Capacity mode is On-Demand.
+    - **Kinesis Data Stream:** verify that the resource was created, Capacity mode is On-Demand.
 
     ![Terraform_kinesis_datastream](https://github.com/arpeggito/babbel_challenge/assets/145495639/5691223b-ed35-404e-90b5-ba7780f6dad4)
 
-    - Lambda: Check that the function is created with the Kinesis Data Stream as a trigger source. (I've attached a JSON file to test the script)
+    - **Lambda:** Check that the function is created with the Kinesis Data Stream as a trigger source. (I've attached a JSON file to test the script)
     
     ![image](https://github.com/arpeggito/babbel_challenge/assets/145495639/6ed19eec-e017-4740-a895-8a8d7c94fc59)
 
-    - S3 Bucket: Verify that the S3 bucket was created.
+    - **S3 Bucket:** Verify that the S3 bucket was created.
 
     ![S3_bucket](https://github.com/arpeggito/babbel_challenge/assets/145495639/9541c06e-b1b2-4c9e-9c4f-46b6e0baaae6)
 
@@ -70,15 +70,21 @@
 ## 4. Verifications:
     To verify that the kinesis data stream is successfully receiving the records:
         a. go to the Data Viewer tab in the Data Stream Summary
+
         b. Select the shard that the record was sent to
+
         c. Select Starting Position Trim Horizon
+
         d. Get records
+
        ![Kinesis_Stream_validation](https://github.com/arpeggito/babbel_challenge/assets/145495639/ba1a1fe9-01ea-4337-9b46-b09c2e85076b)
 
    To verify if the Lambda is performing the transformation:
         a. Go to the S3 bucket
+
         b. Check if there's a 'prefix/' and 'duplicated/' folder
            Note: The duplicated folder will only show up if you send 2 times the same event with the same 'UUID'
+
         ![image](https://github.com/arpeggito/babbel_challenge/assets/145495639/99fbf3b4-73b6-4162-afaa-77a8ac64e7ef)
 
 ## Conclusion
