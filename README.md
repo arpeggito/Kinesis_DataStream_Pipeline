@@ -23,12 +23,12 @@
         
 2. Partitioning Strategy:
 
-    - **Approach:** Since I'm utilizing the On-Demand feature of Kinesis, my approach will be to have shards/partition based on type of events because of the Dynamic Scaling (Scale up at shard level when the patterns of traffic are too high, and scale down when the traffic is low), this approach also provides isolation and efficiency by dedicating shards to specific event types which can lead to more efficient resource utilization, and also cost efficiency with On-Demand mode, you pay only for the resources you use, without the need to provision capacity in advance. 
-    - **Scalability:** Horizontal scaling with AWS services like Kinesis on-demand mode, Lambda and S3 ensures performance as the volume increases or decreases. 
+    - **Approach:** I'm utilizing the On-Demand feature of Kinesis, my approach will be to have shards/partitions based on the type of events because of the dynamic scaling of the on-demand feature (Scale up at shard level when the patterns of traffic are too high, and scale down when the traffic is low), this approach also provides isolation and efficiency by dedicating shards to specific event types which can lead to more efficient resource utilization, and also cost efficiency with On-Demand mode, you pay only for the resources you use, without the need to provision capacity in advance. 
+    - **Scalability:** Horizontal scaling with AWS services like Kinesis on-demand mode, Lambda, and S3 ensures performance as the volume increases or decreases. 
 
 3. Data Storage Format:
 
-    - **Approach:** Use JSON format for storing data in S3 for human readability. Parquet format can be considered for better performance and storage efficiency if needed (Maybe for a Data Analysis perspective)
+    - **Approach:** Use JSON format for storing data in S3 for human readability. Parquet format can be considered for better performance and storage efficiency if needed (Maybe from a Data Analysis perspective)
 
 ![Babbel_Challenge drawio](https://github.com/arpeggito/babbel_challenge/assets/145495639/edff27c8-7602-44d9-aeda-85f2fff1f6b9)
 
