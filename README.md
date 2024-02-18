@@ -16,7 +16,7 @@
 
 1. Handling Duplicate Events:
 
-    - **Approach:** Utilize the event_uuid to identify duplicates. Maintain a record of processed event UUIDs in a separate S3 prefix to filter out duplicates.
+    - **Approach:** Utilize the event_uuid to identify duplicated events. Maintain a record of processed event UUIDs in a separate S3 prefix to filter out duplicates.
     - **Quality Metrics:**
         - **Duplicate event rate:** Percentage of events that are duplicates.
         - **Processing latency:** Time taken to identify and filter out duplicates.
