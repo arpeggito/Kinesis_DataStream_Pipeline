@@ -32,7 +32,9 @@
 
     - **Approach:** Use JSON format for storing data in S3 for human readability. Parquet format can be considered for better performance and storage efficiency if needed, maybe from a Data Analysis perspective.
 
-![Babbel_Challenge drawio](https://github.com/arpeggito/babbel_challenge/assets/145495639/edff27c8-7602-44d9-aeda-85f2fff1f6b9)
+![kinesis_data_pipeline](https://github.com/arpeggito/Kinesis_DataStream_Pipeline/assets/145495639/95d833cb-8e15-4dd3-b891-a9de87bfd4d5)
+
+
 
 ## How to make it work.
 - Note: To run this, you'll need to have the Amazon Cli with your account.
